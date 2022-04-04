@@ -3,10 +3,10 @@ package postgres
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
-	"ozon-fintech/pkg/service"
+	ozon_fintech "ozon-fintech"
 )
 
-func (r Repository) CreateShortURL(ctx context.Context, link *service.Link) (string, error) {
+func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
 	var (
 		query string
 		args  []interface{}
@@ -47,7 +47,7 @@ func (r Repository) CreateShortURL(ctx context.Context, link *service.Link) (str
 	return token, nil
 }
 
-func (r Repository) GetBaseURL(ctx context.Context, link *service.Link) (string, error) {
+func (r Repository) GetBaseURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
 	query, args, err := squirrel.Select("base_url").
 		From(linksTable).
 		Where(squirrel.Eq{
@@ -68,7 +68,7 @@ func (r Repository) GetBaseURL(ctx context.Context, link *service.Link) (string,
 	return baseURL, nil
 }
 
-func linkData(p *service.Link) map[string]interface{} {
+func linkData(p *ozon_fintech.Link) map[string]interface{} {
 	data := map[string]interface{}{
 		"base_url": p.BaseURL,
 		"token":    p.Token,

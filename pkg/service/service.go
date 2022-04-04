@@ -3,9 +3,9 @@ package service
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"fmt"
 	"math/rand"
+	ozon_fintech "ozon-fintech"
 	"regexp"
 	"time"
 )
@@ -13,16 +13,11 @@ import (
 const alphabet = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 type LinkService interface {
-	CreateShortURL(ctx context.Context, link *Link) (string, error)
-	GetBaseURL(ctx context.Context, link *Link) (string, error)
+	CreateShortURL(context.Context, *ozon_fintech.Link) (string, error)
+	GetBaseURL(context.Context, *ozon_fintech.Link) (string, error)
 }
 
-type Link struct {
-	BaseURL string `json:"base_url,omitempty" db:"base_url"`
-	Token   string `json:"short_url,omitempty" db:"short_url"`
-}
-
-func ValidateBaseURL(p *Link) error {
+func ValidateBaseURL(p *ozon_fintech.Link) error {
 	if p == nil {
 		return fmt.Errorf("pass nil pointer")
 	}
@@ -39,7 +34,7 @@ func ValidateBaseURL(p *Link) error {
 	return nil
 }
 
-func ValidateToken(p *Link) error {
+func ValidateToken(p *ozon_fintech.Link) error {
 	if p == nil {
 		return fmt.Errorf("pass nil pointer")
 	}
@@ -74,64 +69,4 @@ func convert(decimalNumber, n int64) string {
 		_, _ = fmt.Fprintf(&buf, "%c", alphabet[curNumber])
 	}
 	return buf.String()
-}
-
-type Error struct {
-	Message string `json:"message"`
-}
-
-type ValidationError struct {
-	Message string      `json:"message"`
-	Errors  *ExtraError `json:"errors"`
-}
-
-type ExtraError struct {
-	AdditionalProperties string `json:"additionalProperties"`
-}
-
-func NewError(message string) *Error {
-	return &Error{Message: message}
-}
-
-func NewValidationError(additionalProperties string) *ValidationError {
-	return &ValidationError{
-		Message: "invalid data",
-		Errors:  NewExtraError(additionalProperties),
-	}
-}
-
-func NewExtraError(additionalProperties string) *ExtraError {
-	return &ExtraError{AdditionalProperties: additionalProperties}
-}
-
-type Repository interface {
-	CreateShortURL(ctx context.Context, link *Link) (string, error)
-	GetBaseURL(ctx context.Context, link *Link) (string, error)
-}
-type Service struct {
-	repos Repository
-}
-
-func NewService(repos Repository) *Service {
-	return &Service{repos: repos}
-}
-
-func (s Service) CreateShortURL(ctx context.Context, link *Link) (string, error) {
-	link.Token = GenerateToken()
-	token, err := s.repos.CreateShortURL(ctx, link)
-	if err != nil {
-		return "", err
-	}
-	return token, nil
-}
-
-func (s Service) GetBaseURL(ctx context.Context, link *Link) (string, error) {
-	baseURL, err := s.repos.GetBaseURL(ctx, link)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return "", nil
-		}
-		return "", err
-	}
-	return baseURL, nil
 }

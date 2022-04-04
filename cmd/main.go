@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	var repos service.Repository
+	var repos service.LinkService
 	if dbFlag {
 		dbConfig := os.Getenv(databaseURLKey)
 		if dbConfig == "" {

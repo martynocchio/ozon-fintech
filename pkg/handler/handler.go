@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	ozon_fintech "ozon-fintech"
 	"ozon-fintech/pkg/service"
 )
 
@@ -32,7 +33,7 @@ func (h *Handler) initLink(api *echo.Group) {
 }
 
 func (h *Handler) createShort(ctx echo.Context) error {
-	input := &service.Link{}
+	input := &ozon_fintech.Link{}
 	if err := ctx.Bind(input); err != nil {
 		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("can't bind input link data"))
 	}
@@ -52,7 +53,7 @@ func (h *Handler) createShort(ctx echo.Context) error {
 }
 
 func (h *Handler) getBase(ctx echo.Context) error {
-	input := &service.Link{}
+	input := &ozon_fintech.Link{}
 	input.Token = ctx.Param("token")
 
 	if err := service.ValidateToken(input); err != nil {
