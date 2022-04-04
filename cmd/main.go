@@ -14,7 +14,7 @@ import (
 
 const (
 	databaseURLKey = "DATABASE_URL"
-	portKey        = "PORT"
+	port           = "port"
 )
 
 func main() {
@@ -35,7 +35,14 @@ func main() {
 			dbConfig = viper.GetString(databaseURLKey)
 		}
 
-		db, err := postgres.NewPostgresDB(dbConfig)
+		db, err := postgres.NewPostgresDB(postgres.Config{
+			Host:     viper.GetString("db.host"),
+			Port:     viper.GetString("db.port"),
+			User:     viper.GetString("db.user"),
+			Password: viper.GetString("db.password"),
+			DBName:   viper.GetString("db.dbname"),
+			SSLMode:  viper.GetString("db.sslmode"),
+		})
 		if err != nil {
 			logrus.Fatalf("failed to initialize db: %v", err)
 		}
@@ -50,7 +57,7 @@ func main() {
 
 	app := echo.New()
 	handlers.InitRotes(app)
-	port := viper.GetString(portKey)
+	port := viper.GetString(port)
 
 	if err := app.Start(":" + port); err != nil {
 		logrus.Fatalf("failed to listen: %v", err)

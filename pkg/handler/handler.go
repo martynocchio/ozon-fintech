@@ -1,24 +1,18 @@
 package handler
 
 import (
-	"context"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"ozon-fintech/pkg/service"
 )
 
-type LinkService interface {
-	CreateShortURL(ctx context.Context, link *service.Link) (string, error)
-	GetBaseURL(ctx context.Context, link *service.Link) (string, error)
-}
-
 type Handler struct {
-	link LinkService
+	services service.LinkService
 }
 
-func NewHandler(link LinkService) *Handler {
+func NewHandler(services service.LinkService) *Handler {
 	return &Handler{
-		link: link,
+		services: services,
 	}
 }
 
@@ -47,7 +41,7 @@ func (h *Handler) createShort(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("validation error"))
 	}
 
-	token, err := h.link.CreateShortURL(ctx.Request().Context(), input)
+	token, err := h.services.CreateShortURL(ctx.Request().Context(), input)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, service.NewError("something went wrong"))
 	}
@@ -65,7 +59,7 @@ func (h *Handler) getBase(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("validation error"))
 	}
 
-	baseURL, err := h.link.GetBaseURL(ctx.Request().Context(), input)
+	baseURL, err := h.services.GetBaseURL(ctx.Request().Context(), input)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, service.NewError("something went wrong"))
 	}

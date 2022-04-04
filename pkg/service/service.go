@@ -12,6 +12,11 @@ import (
 
 const alphabet = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
+type LinkService interface {
+	CreateShortURL(ctx context.Context, link *Link) (string, error)
+	GetBaseURL(ctx context.Context, link *Link) (string, error)
+}
+
 type Link struct {
 	BaseURL string `json:"base_url,omitempty" db:"base_url"`
 	Token   string `json:"short_url,omitempty" db:"short_url"`
