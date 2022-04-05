@@ -15,11 +15,10 @@ func TestGetBaseURL(t *testing.T) {
 	type mockBehavior func(r *mock_repository.MockRepository, input *ozon_fintech.Link)
 
 	testTable := []struct {
-		name               string
-		input              *ozon_fintech.Link
-		want               string
-		mockBehavior       mockBehavior
-		expectedStatusCode int
+		name         string
+		input        *ozon_fintech.Link
+		want         string
+		mockBehavior mockBehavior
 	}{
 		{
 			name:  "OK",
@@ -55,6 +54,52 @@ func TestGetBaseURL(t *testing.T) {
 			tc.mockBehavior(repos, tc.input)
 
 			got, err := service.GetBaseURL(context.Background(), tc.input)
+			if err != nil {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tc.want, got)
+			}
+		})
+	}
+}
+
+func TestCreateShortURL(t *testing.T) {
+	type mockBehavior func(r *mock_repository.MockRepository, input *ozon_fintech.Link)
+
+	testTable := []struct {
+		name         string
+		input        *ozon_fintech.Link
+		want         string
+		mockBehavior mockBehavior
+	}{
+		{
+			name:  "OK",
+			input: &ozon_fintech.Link{BaseURL: "https://yandex.ru"},
+			want:  "TOKEN_1234",
+			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
+				r.EXPECT().CreateShortURL(gomock.Any(), input).Return("TOKEN_1234", nil)
+			},
+		},
+		{
+			name:  "ERROR",
+			input: &ozon_fintech.Link{BaseURL: "https://yandex.ru"},
+			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
+				r.EXPECT().CreateShortURL(gomock.Any(), input).Return("", fmt.Errorf("some error"))
+			},
+		},
+	}
+	c := gomock.NewController(t)
+	defer c.Finish()
+
+	repos := mock_repository.NewMockRepository(c)
+	service := NewService(repos)
+
+	for _, tc := range testTable {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mockBehavior(repos, tc.input)
+
+			got, err := service.CreateShortURL(context.Background(), tc.input)
 			if err != nil {
 				assert.NotNil(t, err)
 			} else {
