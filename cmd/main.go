@@ -53,10 +53,10 @@ func main() {
 
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
+	port := viper.GetString(port)
 
 	app := echo.New()
 	handlers.InitRotes(app)
-	port := viper.GetString(port)
 
 	if err := app.Start(":" + port); err != nil {
 		logrus.Fatalf("failed to listen: %v", err)
