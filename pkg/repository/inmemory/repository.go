@@ -5,9 +5,9 @@ type Repository struct {
 	fullToBrief map[string]string
 }
 
-func NewRepository(n int) *Repository {
-	briefToFull := make(map[string]string, n)
-	fullToBrief := make(map[string]string, n)
+func NewRepository() *Repository {
+	briefToFull := make(map[string]string)
+	fullToBrief := make(map[string]string)
 	return &Repository{
 		briefToFull: briefToFull,
 		fullToBrief: fullToBrief,

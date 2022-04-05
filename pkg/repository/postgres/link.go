@@ -2,18 +2,19 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 	"github.com/Masterminds/squirrel"
 	ozon_fintech "ozon-fintech"
 )
 
-func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
-	var (
-		query string
-		args  []interface{}
-		err   error
-		token string
-	)
+var (
+	query string
+	args  []interface{}
+	err   error
+	token string
+)
 
+func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
 	query, args, err = squirrel.Select("token").
 		From(linksTable).
 		Where(squirrel.Eq{
@@ -25,8 +26,7 @@ func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link)
 	if err != nil {
 		return "", err
 	}
-
-	if err := r.db.GetContext(ctx, &token, query, args...); err == nil {
+	if err = r.db.GetContext(ctx, &token, query, args); err == nil {
 		return token, nil
 	}
 
@@ -39,7 +39,6 @@ func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link)
 	if err != nil {
 		return "", err
 	}
-
 	if err := r.db.GetContext(ctx, &token, query, args...); err != nil {
 		return "", err
 	}
@@ -48,20 +47,13 @@ func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link)
 }
 
 func (r Repository) GetBaseURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
-	query, args, err := squirrel.Select("base_url").
-		From(linksTable).
-		Where(squirrel.Eq{
-			"token": link.Token,
-		}).
-		PlaceholderFormat(squirrel.Dollar).
-		ToSql()
-
-	if err != nil {
-		return "", err
-	}
+	query := fmt.Sprintf("SELECT base_url FROM %s WHERE token = $1", linksTable)
+	row := r.db.QueryRow(query, link.Token)
 
 	var baseURL string
-	if err := r.db.GetContext(ctx, &baseURL, query, args...); err != nil {
+	err := row.Scan(&baseURL)
+
+	if err != nil {
 		return "", err
 	}
 

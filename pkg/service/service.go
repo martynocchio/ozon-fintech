@@ -12,7 +12,7 @@ import (
 
 const alphabet = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-type LinkService interface {
+type Services interface {
 	CreateShortURL(context.Context, *ozon_fintech.Link) (string, error)
 	GetBaseURL(context.Context, *ozon_fintech.Link) (string, error)
 }

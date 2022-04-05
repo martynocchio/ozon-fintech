@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	var repos service.LinkService
+	var repos service.Services
 	if dbFlag {
 		dbConfig := os.Getenv(databaseURLKey)
 		if dbConfig == "" {
@@ -48,12 +48,11 @@ func main() {
 		}
 		repos = postgres.NewRepository(db)
 	} else {
-		const mapLen = 64
-		repos = inmemory.NewRepository(mapLen)
+		repos = inmemory.NewRepository()
 	}
 
-	linkService := service.NewService(repos)
-	handlers := handler.NewHandler(linkService)
+	services := service.NewService(repos)
+	handlers := handler.NewHandler(services)
 
 	app := echo.New()
 	handlers.InitRotes(app)
