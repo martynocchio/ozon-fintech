@@ -3,20 +3,12 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	ozon_fintech "ozon-fintech"
 )
 
 const linksTable = "links"
-
-var (
-	query string
-	args  []interface{}
-	err   error
-	token string
-)
 
 type Config struct {
 	Host     string
@@ -51,34 +43,21 @@ func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 }
 
 func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
-	query, args, err = squirrel.Select("token").
-		From(linksTable).
-		Where(squirrel.Eq{
-			"base_url": link.BaseURL,
-		}).
-		PlaceholderFormat(squirrel.Dollar).
-		ToSql()
+	var token string
 
-	if err != nil {
-		return "", err
-	}
-	if err = r.db.GetContext(ctx, &token, query, args); err == nil {
+	query := fmt.Sprintf("SELECT token FROM %s WHERE base_url = $1", linksTable)
+	row := r.db.QueryRow(query, link.BaseURL)
+
+	err := row.Scan(&token)
+	if err == nil {
 		return token, nil
 	}
 
-	query, args, err = squirrel.Insert(linksTable).
-		SetMap(linkData(link)).
-		Suffix("RETURNING token").
-		PlaceholderFormat(squirrel.Dollar).
-		ToSql()
-
+	query = fmt.Sprintf("INSERT INTO %s (base_url, token) VALUES($1, $2) RETURNING token", linksTable)
+	err = r.db.QueryRow(query, link.BaseURL, link.Token).Scan(&token)
 	if err != nil {
 		return "", err
 	}
-	if err := r.db.GetContext(ctx, &token, query, args...); err != nil {
-		return "", err
-	}
-
 	return token, nil
 }
 
@@ -94,13 +73,4 @@ func (r Repository) GetBaseURL(ctx context.Context, link *ozon_fintech.Link) (st
 	}
 
 	return baseURL, nil
-}
-
-func linkData(p *ozon_fintech.Link) map[string]interface{} {
-	data := map[string]interface{}{
-		"base_url": p.BaseURL,
-		"token":    p.Token,
-	}
-
-	return data
 }

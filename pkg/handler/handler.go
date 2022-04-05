@@ -20,15 +20,11 @@ func NewHandler(services service.Services) *Handler {
 func (h *Handler) InitRotes(router *echo.Echo) {
 	api := router.Group("/api")
 	{
-		h.initLink(api)
-	}
-}
-
-func (h *Handler) initLink(api *echo.Group) {
-	links := api.Group("/tokens")
-	{
-		links.GET("/:token", h.getBase)
-		links.POST("", h.createShort)
+		links := api.Group("/tokens")
+		{
+			links.GET("/:token", h.getBase)
+			links.POST("", h.createShort)
+		}
 	}
 }
 
