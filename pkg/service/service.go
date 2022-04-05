@@ -12,6 +12,8 @@ import (
 
 const alphabet = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Services interface {
 	CreateShortURL(context.Context, *ozon_fintech.Link) (string, error)
 	GetBaseURL(context.Context, *ozon_fintech.Link) (string, error)

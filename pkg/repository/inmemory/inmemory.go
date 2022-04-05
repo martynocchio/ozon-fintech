@@ -6,6 +6,20 @@ import (
 	ozon_fintech "ozon-fintech"
 )
 
+type Repository struct {
+	briefToFull map[string]string
+	fullToBrief map[string]string
+}
+
+func NewRepository() *Repository {
+	briefToFull := make(map[string]string)
+	fullToBrief := make(map[string]string)
+	return &Repository{
+		briefToFull: briefToFull,
+		fullToBrief: fullToBrief,
+	}
+}
+
 func (r Repository) CreateShortURL(_ context.Context, link *ozon_fintech.Link) (string, error) {
 	if _, ok := r.briefToFull[link.Token]; ok {
 		return "", fmt.Errorf("token already exist")

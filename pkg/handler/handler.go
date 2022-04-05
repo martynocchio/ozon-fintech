@@ -35,16 +35,16 @@ func (h *Handler) initLink(api *echo.Group) {
 func (h *Handler) createShort(ctx echo.Context) error {
 	input := &ozon_fintech.Link{}
 	if err := ctx.Bind(input); err != nil {
-		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("can't bind input link data"))
+		return ctx.JSON(http.StatusBadRequest, NewValidationError("can't bind input link data"))
 	}
 
 	if err := service.ValidateBaseURL(input); err != nil {
-		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("validation error"))
+		return ctx.JSON(http.StatusBadRequest, NewValidationError("validation error"))
 	}
 
 	token, err := h.services.CreateShortURL(ctx.Request().Context(), input)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, service.NewError("something went wrong"))
+		return ctx.JSON(http.StatusInternalServerError, NewError("something went wrong"))
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -57,16 +57,16 @@ func (h *Handler) getBase(ctx echo.Context) error {
 	input.Token = ctx.Param("token")
 
 	if err := service.ValidateToken(input); err != nil {
-		return ctx.JSON(http.StatusBadRequest, service.NewValidationError("validation error"))
+		return ctx.JSON(http.StatusBadRequest, NewValidationError("validation error"))
 	}
 
 	baseURL, err := h.services.GetBaseURL(ctx.Request().Context(), input)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, service.NewError("something went wrong"))
+		return ctx.JSON(http.StatusInternalServerError, NewError("something went wrong"))
 	}
 
 	if baseURL == "" {
-		return ctx.JSON(http.StatusNotFound, service.NewError("not such token"))
+		return ctx.JSON(http.StatusNotFound, NewError("not such token"))
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
