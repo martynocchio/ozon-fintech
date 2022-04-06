@@ -93,12 +93,12 @@ Response:
 ### Запуск в режиме inmemory
 ```
 docker-compose build app_im
-docker-compose run -p 127.0.0.1:8080:8080 -d app_im
+docker-compose run app_im
 ```
 ### Запуск в режиме postgresql
 ```
 docker-compose build app_db
-docker-compose run -p 127.0.0.1:8080:8080 -d app_db
+docker-compose run app_db
 ```
 
 
@@ -106,20 +106,9 @@ docker-compose run -p 127.0.0.1:8080:8080 -d app_db
 
 ### Запуск в режиме inmemory
 ```
-make fmt
-make build
 make run_im
 ```
 ### Запуск в режиме postgresql
 ```
-make fmt
-make build
 make run_db
-```
-
-# Тестирование: запуск модульных (юнит) тестов
-
-```
-make generate
-make test
 ```
