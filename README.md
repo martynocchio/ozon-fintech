@@ -106,11 +106,18 @@ make run_db
 ...или без makefile: go run ./cmd./main.go -db
 *Флаг -db указывает на подключение к СУБД и используется в проверке условия подключения в main
 ```
-Сменить host: "db" на "localhost" в файле конфигурации configs/config.yml 
-Указать порт: 5436 (если свободен)
-Запустить докер контейнер: docker run --name=ozon-fintech -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
-Применить миграции к базе данных: migrate path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
-Можно тестировать запросы на базу данных postgres
+
+1. Сменить host: "db" на "localhost" в файле конфигурации configs/config.yml 
+2. Указать порт: 5436 (если свободен)
+3. Запустить докер контейнер:
+```
+ docker run --name=ozon-fintech -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
+```
+4. Применить миграции к базе данных:
+```
+ migrate path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
+```
+5. Можно тестировать запросы на базу данных postgres
 
 ## С помощью docker-compose
 
@@ -119,6 +126,7 @@ make run_db
 docker-compose build app_im
 docker-compose run app_im
 ```
+Последовательный ввод в терминале, сборка по docker-compose.yml
 ### Запуск в режиме postgresql
 ```
 docker-compose build app_db
