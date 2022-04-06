@@ -1,21 +1,14 @@
-OZON=./bin/ozon
-
 test:
 		go test ./... -cover
 
 build:
-		go build -o $(OZON) ./cmd/main.go
-
-fmt:
-		go fmt ./...
-		goimports -l ./
-		go mod tidy
+		go build -o ./bin/ozon ./cmd/main.go
 
 generate:
 		go generate ./...
 
-run_im:
-		$(OZON)
+run_inmemory:
+		go run ./cmd/main.go
 
 run_db:
-		$(OZON) -db
+		go run ./cmd/main.go -db

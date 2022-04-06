@@ -15,21 +15,21 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: "postgres://postgres:qwerty@db:5436/postgres?sslmode=disable"
-      DB_PASSWORD: "qwerty"
+      DATABASE_URL: "postgres://postgres:mrv8336@db:5436/postgres?sslmode=disable"
+      DB_PASSWORD: "mrv8336"
 
   db:
     restart: always
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "qwerty"
+      POSTGRES_PASSWORD: "mrv8336"
       POSTGRES_DB: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - "5432:5432"
+      - "5436:5432"
 
 volumes:
   db-data:
