@@ -107,13 +107,23 @@ make run_db
 *Флаг -db указывает на подключение к СУБД и используется в проверке условия подключения в main
 ```
 
-1. Сменить host: "db" на "localhost" в файле конфигурации configs/config.yml , пароль на mrv8336
-2. Указать порт: 5436 (если свободен)
-3. Запустить докер контейнер:
+1. Конфигурация для запуска на localhost, изменить параметры в configs/config.yml:
+
+PORT: "8080"
+
+db:
+  host: "localhost"
+  port: "5436"
+  user: "postgres"
+  password: "mrv8336"
+  dbname: "postgres"
+  sslmode: "disable"
+  
+2. Запустить докер контейнер:
 ```
  docker run --name=ozon-fintech -e POSTGRES_PASSWORD='mrv8336' -p 5436:5432 -d --rm postgres
 ```
-4. Применить миграции к базе данных:
+4. Применить миграции к базе данных (миграции должны быть применены из файла с проектом):
 ```
  migrate -path ./schema -database 'postgres://postgres:mrv8336@localhost:5436/postgres?sslmode=disable' up
 ```
