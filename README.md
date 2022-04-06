@@ -115,7 +115,7 @@ make run_db
 ```
 4. Применить миграции к базе данных:
 ```
- migrate path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
+ migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
 ```
 5. Можно тестировать запросы на базу данных postgres
 
