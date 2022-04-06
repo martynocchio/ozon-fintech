@@ -88,6 +88,18 @@ Response:
 > 2) Обработка ошибок реализована путем возвращения соответствующего HTTP кода, в теле содержится описание возникшей ошибки
 
 # Параметры запуска
+
+## С помощью Makefile
+
+### Запуск в режиме inmemory
+```
+make run_im
+```
+### Запуск в режиме postgresql
+```
+make run_db
+```
+
 ## С помощью docker-compose
 
 ### Запуск в режиме inmemory
@@ -99,16 +111,4 @@ docker-compose run app_im
 ```
 docker-compose build app_db
 docker-compose run app_db
-```
-
-
-## С помощью Makefile
-
-### Запуск в режиме inmemory
-```
-make run_im
-```
-### Запуск в режиме postgresql
-```
-make run_db
 ```
