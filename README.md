@@ -34,9 +34,12 @@
 http://localhost:8080/api/tokens
 
 **Пример реализации сокращения ссылки**
+
+Для проведения тестовых запросов можно использовать Postman, следует установить Content-Type и написать запрос к localhost:8080/api/tokens (localhost:8080/api/tokens/:token), либо сторонние утилиты.
 ```
 Request:
 Method: POST
+
 http://localhost:8080/api/tokens
 header: 'Content-Type: application/json'
 
@@ -55,6 +58,7 @@ Response:
 ```
 Request:
 Method: GET
+
 http://localhost:8080/api/tokens/WmXge0ssss
 header: 'Content-Type: application/json'
 
@@ -86,12 +90,12 @@ Response:
 # Параметры запуска
 ## С помощью docker-compose
 
-### Запуск с inmemory хранилищем
+### Запуск в режиме inmemory
 ```
 docker-compose build app_im
 docker-compose run -p 127.0.0.1:8080:8080 -d app_im
 ```
-### Запуск с postgresql хранилищем
+### Запуск в режиме postgresql
 ```
 docker-compose build app_db
 docker-compose run -p 127.0.0.1:8080:8080 -d app_db
@@ -100,20 +104,20 @@ docker-compose run -p 127.0.0.1:8080:8080 -d app_db
 
 ## С помощью Makefile
 
-### Запуск с in-memory хранилищем
+### Запуск в режиме inmemory
 ```
 make fmt
 make build
 make run_im
 ```
-### Запуск с postgresql хранилищем
+### Запуск в режиме postgresql
 ```
 make fmt
 make build
 make run_db
 ```
 
-# Тестирование: запуск юнит-тестов
+# Тестирование: запуск модульных (юнит) тестов
 
 ```
 make generate
