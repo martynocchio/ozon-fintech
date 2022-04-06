@@ -94,11 +94,23 @@ Response:
 ### Запуск в режиме inmemory
 ```
 make run_im
+
+...или без makefile: go run ./cmd./main.go
 ```
+Можно тестировать запросы, которые сохраняются в map самого приложения (inmemory)
+
 ### Запуск в режиме postgresql
 ```
 make run_db
+
+...или без makefile: go run ./cmd./main.go -db
+*Флаг -db указывает на подключение к СУБД и используется в проверке условия подключения в main
 ```
+Сменить host: "db" на "localhost" в файле конфигурации configs/config.yml 
+Указать порт: 5436 (если свободен)
+Запустить докер контейнер: docker run --name=ozon-fintech -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
+Применить миграции к базе данных: migrate path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
+Можно тестировать запросы на базу данных postgres
 
 ## С помощью docker-compose
 
