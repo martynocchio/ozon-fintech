@@ -107,8 +107,9 @@ make run_db
 *Флаг -db указывает на подключение к СУБД и используется в проверке условия подключения в main
 ```
 
-1. Конфигурация для запуска на localhost, изменить параметры в configs/config.yml:
-
+1. Конфигурация для запуска на localhost (Или используйте соответствующий коммит с уже собранным конфигурационным файлом),
+изменить (проверить) параметры в configs/config.yml:
+```
 PORT: "8080"
 
 db:
@@ -119,15 +120,21 @@ db:
   dbname: "postgres"
   sslmode: "disable"
   
+  
+```  
 2. Запустить докер контейнер:
 ```
- docker run --name=ozon-fintech -e POSTGRES_PASSWORD='mrv8336' -p 5436:5432 -d --rm postgres
+  docker run --name=ozon-fintech -e POSTGRES_PASSWORD='mrv8336' -p 5436:5432 -d --rm postgres
 ```
 4. Применить миграции к базе данных (миграции должны быть применены из файла с проектом):
 ```
  migrate -path ./schema -database 'postgres://postgres:mrv8336@localhost:5436/postgres?sslmode=disable' up
 ```
-5. Можно тестировать запросы на базу данных postgres
+5.  Подключаемся к контейнеру:
+```
+docker exec -it *CONTAINER ID FROM "docker ps"* /bin/bash
+```
+6.  Можно тестировать запросы на базу данных postgres
 
 ## С помощью docker-compose
 
