@@ -137,15 +137,24 @@ docker exec -it *CONTAINER ID FROM "docker ps"* /bin/bash
 6.  Можно тестировать запросы на базу данных postgres
 
 ## С помощью docker-compose
+Для запуска образа Docker через docker-compose, следует привести файл конфигурации config/configs.yml к следующему виду:
+```
+PORT: "8080"
 
+db:
+  host: "db"
+  port: "5432"
+  user: "postgres"
+  password: "mrv8336"
+  dbname: "postgres"
+  sslmode: "disable"
+```
 ### Запуск в режиме inmemory
 ```
-docker-compose build app_im
-docker-compose run app_im
+docker-compose up --build app_im
 ```
 Последовательный ввод в терминале, сборка по docker-compose.yml
 ### Запуск в режиме postgresql
 ```
-docker-compose build app_db
-docker-compose run app_db
+docker-compose up --build app_db
 ```
