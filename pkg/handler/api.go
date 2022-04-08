@@ -17,7 +17,7 @@ func (h *Handler) createShort(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, NewValidationError("validation error"))
 	}
 
-	token, err := h.services.CreateShortURL(ctx.Request().Context(), input)
+	token, err := h.services.CreateShortURL(input)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, NewError("something went wrong"))
 	}
@@ -35,7 +35,7 @@ func (h *Handler) getBase(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, NewValidationError("validation error"))
 	}
 
-	baseURL, err := h.services.GetBaseURL(ctx.Request().Context(), input)
+	baseURL, err := h.services.GetBaseURL(input)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, NewError("something went wrong"))
 	}

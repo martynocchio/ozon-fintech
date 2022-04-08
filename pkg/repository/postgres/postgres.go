@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -42,7 +41,7 @@ func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 	return db, nil
 }
 
-func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
+func (r Repository) CreateShortURL(link *ozon_fintech.Link) (string, error) {
 	var token string
 
 	query := fmt.Sprintf("SELECT token FROM %s WHERE base_url = $1", linksTable)
@@ -61,7 +60,7 @@ func (r Repository) CreateShortURL(ctx context.Context, link *ozon_fintech.Link)
 	return token, nil
 }
 
-func (r Repository) GetBaseURL(ctx context.Context, link *ozon_fintech.Link) (string, error) {
+func (r Repository) GetBaseURL(link *ozon_fintech.Link) (string, error) {
 	query := fmt.Sprintf("SELECT base_url FROM %s WHERE token = $1", linksTable)
 	row := r.db.QueryRow(query, link.Token)
 

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"github.com/golang/mock/gomock"
@@ -25,21 +24,21 @@ func TestGetBaseURL(t *testing.T) {
 			input: &ozon_fintech.Link{Token: "abc_012_yz"},
 			want:  "https://yandex.ru",
 			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
-				r.EXPECT().GetBaseURL(gomock.Any(), input).Return("https://yandex.ru", nil)
+				r.EXPECT().GetBaseURL(input).Return("https://yandex.ru", nil)
 			},
 		},
 		{
 			name:  "ERROR",
 			input: &ozon_fintech.Link{Token: "abc_012_yz"},
 			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
-				r.EXPECT().GetBaseURL(gomock.Any(), input).Return("", fmt.Errorf("some error"))
+				r.EXPECT().GetBaseURL(input).Return("", fmt.Errorf("some error"))
 			},
 		},
 		{
 			name:  "ERROR_NOT_FOUND",
 			input: &ozon_fintech.Link{Token: "abc_012_yz"},
 			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
-				r.EXPECT().GetBaseURL(gomock.Any(), input).Return("", sql.ErrNoRows)
+				r.EXPECT().GetBaseURL(input).Return("", sql.ErrNoRows)
 			},
 		},
 	}
@@ -53,7 +52,7 @@ func TestGetBaseURL(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.mockBehavior(repos, tc.input)
 
-			got, err := service.GetBaseURL(context.Background(), tc.input)
+			got, err := service.GetBaseURL(tc.input)
 			if err != nil {
 				assert.NotNil(t, err)
 			} else {
@@ -78,14 +77,14 @@ func TestCreateShortURL(t *testing.T) {
 			input: &ozon_fintech.Link{BaseURL: "https://yandex.ru"},
 			want:  "TOKEN_1234",
 			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
-				r.EXPECT().CreateShortURL(gomock.Any(), input).Return("TOKEN_1234", nil)
+				r.EXPECT().CreateShortURL(input).Return("TOKEN_1234", nil)
 			},
 		},
 		{
 			name:  "ERROR",
 			input: &ozon_fintech.Link{BaseURL: "https://yandex.ru"},
 			mockBehavior: func(r *mock_repository.MockRepository, input *ozon_fintech.Link) {
-				r.EXPECT().CreateShortURL(gomock.Any(), input).Return("", fmt.Errorf("some error"))
+				r.EXPECT().CreateShortURL(input).Return("", fmt.Errorf("some error"))
 			},
 		},
 	}
@@ -99,7 +98,7 @@ func TestCreateShortURL(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.mockBehavior(repos, tc.input)
 
-			got, err := service.CreateShortURL(context.Background(), tc.input)
+			got, err := service.CreateShortURL(tc.input)
 			if err != nil {
 				assert.NotNil(t, err)
 			} else {

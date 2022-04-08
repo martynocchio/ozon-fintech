@@ -26,7 +26,7 @@ func TestHandler_createShortURL(t *testing.T) {
 			name:  "OK",
 			input: `{"base_url":"https://ozon.ru"}`,
 			mockBehavior: func(s *mock_service.MockServices) {
-				s.EXPECT().CreateShortURL(gomock.Any(), gomock.Any()).Return("token", nil)
+				s.EXPECT().CreateShortURL(gomock.Any()).Return("token", nil)
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -40,7 +40,7 @@ func TestHandler_createShortURL(t *testing.T) {
 			name:  "error_internal",
 			input: `{"base_url":"https://ozon.ru"}`,
 			mockBehavior: func(s *mock_service.MockServices) {
-				s.EXPECT().CreateShortURL(gomock.Any(), gomock.Any()).Return("", fmt.Errorf("some error"))
+				s.EXPECT().CreateShortURL(gomock.Any()).Return("", fmt.Errorf("some error"))
 			},
 			expectedStatusCode: http.StatusInternalServerError,
 		},
@@ -88,7 +88,7 @@ func TestHandler_getBaseURL(t *testing.T) {
 			input: "zxcl012_yz",
 			mockBehavior: func(s *mock_service.MockServices) {
 				s.EXPECT().
-					GetBaseURL(gomock.Any(), &ozon_fintech.Link{Token: "zxcl012_yz"}).Return("https://ozon.ru", nil)
+					GetBaseURL(&ozon_fintech.Link{Token: "zxcl012_yz"}).Return("https://ozon.ru", nil)
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -103,7 +103,7 @@ func TestHandler_getBaseURL(t *testing.T) {
 			input: "zxcl012_yz",
 			mockBehavior: func(s *mock_service.MockServices) {
 				s.EXPECT().
-					GetBaseURL(gomock.Any(), &ozon_fintech.Link{Token: "zxcl012_yz"}).Return("", fmt.Errorf("some error"))
+					GetBaseURL(&ozon_fintech.Link{Token: "zxcl012_yz"}).Return("", fmt.Errorf("some error"))
 			},
 			expectedStatusCode: http.StatusInternalServerError,
 		},
@@ -112,7 +112,7 @@ func TestHandler_getBaseURL(t *testing.T) {
 			input: "zxcl012_yz",
 			mockBehavior: func(s *mock_service.MockServices) {
 				s.EXPECT().
-					GetBaseURL(gomock.Any(), &ozon_fintech.Link{Token: "zxcl012_yz"}).Return("", nil)
+					GetBaseURL(&ozon_fintech.Link{Token: "zxcl012_yz"}).Return("", nil)
 			},
 			expectedStatusCode: http.StatusNotFound,
 		},

@@ -5,16 +5,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
 	"ozon-fintech/pkg/handler"
+	"ozon-fintech/pkg/repository"
 	"ozon-fintech/pkg/repository/inmemory"
 	"ozon-fintech/pkg/repository/postgres"
 	"ozon-fintech/pkg/service"
 )
 
 const (
-	databaseURLKey = "DATABASE_URL"
-	port           = "port"
+	port = "port"
 )
 
 func main() {
@@ -27,14 +26,9 @@ func main() {
 	flag.Parse()
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	var repos service.Services
-	if dbFlag {
-		dbConfig := os.Getenv(databaseURLKey)
-		if dbConfig == "" {
-			logrus.Info("empty env config")
-			dbConfig = viper.GetString(databaseURLKey)
-		}
+	var repos repository.Repository
 
+	if dbFlag {
 		db, err := postgres.NewPostgresDB(postgres.Config{
 			Host:     viper.GetString("db.host"),
 			Port:     viper.GetString("db.port"),
@@ -53,8 +47,8 @@ func main() {
 
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
-	port := viper.GetString(port)
 
+	port := viper.GetString(port)
 	app := echo.New()
 	handlers.InitRotes(app)
 

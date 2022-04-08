@@ -11,11 +11,10 @@ services:
     build: ./
     command: ./wait-for-postgres.sh db ./app -db
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - db
     environment:
-      DATABASE_URL: "postgres://postgres:mrv8336@db:5436/postgres?sslmode=disable"
       DB_PASSWORD: "mrv8336"
 
   db:
@@ -29,7 +28,7 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - "5436:5432"
+      - "5432:5432"
 
 volumes:
   db-data:

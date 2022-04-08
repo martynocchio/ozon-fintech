@@ -1,7 +1,6 @@
 package inmemory
 
 import (
-	"context"
 	"fmt"
 	ozon_fintech "ozon-fintech"
 	"sync"
@@ -22,13 +21,10 @@ func NewRepository() *Repository {
 	}
 }
 
-func (r *Repository) CreateShortURL(_ context.Context, link *ozon_fintech.Link) (string, error) {
+func (r *Repository) CreateShortURL(link *ozon_fintech.Link) (string, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	if _, ok := r.briefToFull[link.Token]; ok {
-		return "", fmt.Errorf("token already exist")
-	}
 	if token, ok := r.fullToBrief[link.BaseURL]; ok {
 		return token, nil
 	}
@@ -39,7 +35,7 @@ func (r *Repository) CreateShortURL(_ context.Context, link *ozon_fintech.Link) 
 	return link.Token, nil
 }
 
-func (r *Repository) GetBaseURL(_ context.Context, link *ozon_fintech.Link) (string, error) {
+func (r *Repository) GetBaseURL(link *ozon_fintech.Link) (string, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
