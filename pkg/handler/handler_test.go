@@ -24,9 +24,9 @@ func TestHandler_createShortURL(t *testing.T) {
 	}{
 		{
 			name:  "OK",
-			input: `{"base_url":"https://ozon.ru"}`,
+			input: `{"base_url":"https://ozon.ru/sas"}`,
 			mockBehavior: func(s *mock_service.MockServices) {
-				s.EXPECT().CreateShortURL(gomock.Any()).Return("token", nil)
+				s.EXPECT().CreateShortURL(&ozon_fintech.Link{BaseURL: "https://ozon.ru/sas"}).Return("token", nil)
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -38,9 +38,9 @@ func TestHandler_createShortURL(t *testing.T) {
 		},
 		{
 			name:  "error_internal",
-			input: `{"base_url":"https://ozon.ru"}`,
-			mockBehavior: func(s *mock_service.MockServices) {
-				s.EXPECT().CreateShortURL(gomock.Any()).Return("", fmt.Errorf("some error"))
+			input: `{"base_url":"https://ozon.ru/sas"}`,
+			mockBehavior: func(repos *mock_service.MockServices) {
+				repos.EXPECT().CreateShortURL(&ozon_fintech.Link{BaseURL: "https://ozon.ru/sas"}).Return("", fmt.Errorf("some error"))
 			},
 			expectedStatusCode: http.StatusInternalServerError,
 		},
